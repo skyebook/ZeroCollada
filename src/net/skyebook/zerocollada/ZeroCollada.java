@@ -64,7 +64,7 @@ public class ZeroCollada {
 			// Do a transform that brings us as close to zero as possible
 			SAXBuilder builder = new SAXBuilder();
 			Document dom = builder.build(colladaFile);
-			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom);
+			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, false);
 			ct.writeColladaToFile(new File(colladaFile.toString().substring(0, colladaFile.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
 		}
 		else{
@@ -82,7 +82,7 @@ public class ZeroCollada {
 	public static void optionsSetup(){
 		options = new Options();
 
-		Option transform = new Option(ZCOpts.transform, "Perform a transform.  Defaults to a center anchor without consideration for the Y-axis");		
+		Option transform = new Option(ZCOpts.transform, "Perform a transform.  Defaults to closet-to-origin anchor without consideration for the Y-axis");		
 		Option includeY = new Option(ZCOpts.includeY, "Include the Y-Axis in this transform calculation");
 		Option anchorCenter = new Option(ZCOpts.anchorCenter, "Anchors the transformation to the middle of the *range* of coordinates (not the average)");
 

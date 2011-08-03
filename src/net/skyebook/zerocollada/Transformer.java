@@ -26,7 +26,6 @@ import net.skyebook.zerocollada.structure.Vector3;
 import net.skyebook.zerocollada.structure.Vector3d;
 import net.skyebook.zerocollada.structure.Vector3f;
 
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -42,12 +41,15 @@ public abstract class Transformer {
 	private Document colladaDoc;
 	private String positionsSourceID;
 	private Element positionsElement;
+	
+	protected boolean handleY=false;
 
 	/**
 	 * 
 	 */
-	public Transformer(Document collada) {
-		colladaDoc = collada;
+	public Transformer(Document collada, boolean handleY) {
+		colladaDoc=collada;
+		this.handleY=handleY;
 		
 		// Performs the transformation
 		scanCollada();

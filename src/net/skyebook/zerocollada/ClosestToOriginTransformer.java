@@ -33,14 +33,12 @@ public class ClosestToOriginTransformer extends Transformer {
 	private Number xMax;
 	private Number yMax;
 	private Number zMax;
-
-	private String filenameSuffix;
-
+	
 	/**
 	 * @param collada
 	 */
-	public ClosestToOriginTransformer(Document collada) {
-		super(collada);
+	public ClosestToOriginTransformer(Document collada, boolean handleY) {
+		super(collada, handleY);
 	}
 
 	/*
@@ -50,41 +48,45 @@ public class ClosestToOriginTransformer extends Transformer {
 	@SuppressWarnings("unchecked")
 	public void doTransformation(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement) {
 
+		boolean firstRun=true;
+		
 		for(Vector3<?> v : vertices){
 			// if one is NaN, all are NaN.. initialize them here
-			if(xMax==null){
+			if(firstRun){
 				xMax = v.x;
-				yMax = v.y;
+				if(handleY) yMax = v.y;
 				zMax = v.z;
 
-				System.out.println("X,Y,Z initialized");
+				System.out.println("Numbers initialized");
+				firstRun=false;
 				continue;
 			}
 
 			// check for floats
 			if(v.x instanceof Float){
+				if(xMax==null) System.out.println("wtf");
 				if(((Float)v.x)>((Float)xMax)) xMax=v.x;
-				if(((Float)v.y)>((Float)yMax)) yMax=v.y;
+				if(handleY) if(((Float)v.y)>((Float)yMax)) yMax=v.y;
 				if(((Float)v.z)>((Float)zMax)) zMax=v.z;
 			}
 
 			// check for doubles
 			if(v.x instanceof Double){
 				if(((Double)v.x)>((Double)xMax)) xMax=v.x;
-				if(((Double)v.y)>((Double)yMax)) yMax=v.y;
+				if(handleY) if(((Double)v.y)>((Double)yMax)) yMax=v.y;
 				if(((Double)v.z)>((Double)zMax)) zMax=v.z;
 			}
 		}
 
 		for(int i=0; i<vertices.size(); i++){
-			Vector3 o = vertices.get(i);
+			Vector3<?> o = vertices.get(i);
 
 			// check for floats
 			if(((Vector3<?>)o).x instanceof Float){
 				Vector3<Float> v = (Vector3<Float>) o;
 
 				v.x = ((Float)v.x)-((Float)xMax);
-				v.y = ((Float)v.y)-((Float)yMax);
+				if(handleY) v.y = ((Float)v.y)-((Float)yMax);
 				v.z = ((Float)v.z)-((Float)zMax);
 			}
 
@@ -93,14 +95,14 @@ public class ClosestToOriginTransformer extends Transformer {
 				Vector3<Double> v = (Vector3<Double>) o;
 
 				v.x = ((Double)v.x)-((Double)xMax);
-				v.y = ((Double)v.y)-((Double)yMax);
+				if(handleY) v.y = ((Double)v.y)-((Double)yMax);
 				v.z = ((Double)v.z)-((Double)zMax);
 			}
 		}
 
 		rewriteArray(vertices, positionsElement, arrayElement);
 
-		System.out.println("Offset " + xMax +", "+yMax+", "+zMax);
+		//System.out.println("Offset " + xMax +", "+yMax+", "+zMax);
 	}
 
 	/* (non-Javadoc)
@@ -108,7 +110,16 @@ public class ClosestToOriginTransformer extends Transformer {
 	 */
 	@Override
 	public String newFileNameSuffix() {
-		return "x_"+xMax+"y_"+yMax+"z_"+zMax;
+		StringBuilder suffix = new StringBuilder();
+		suffix.append("x_");
+		suffix.append(xMax);
+		if(handleY){
+			suffix.append("y_");
+			suffix.append(yMax);
+		}
+		suffix.append("z_");
+		suffix.append(zMax);
+		return suffix.toString();
 	}
 
 }
