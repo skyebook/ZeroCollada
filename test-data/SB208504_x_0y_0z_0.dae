@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>Levis</author>
+      <authoring_tool>OpenCOLLADA2011</authoring_tool>
+      <comments>
+			ColladaMaya export options: 
+			bakeTransforms=0;relativePaths=0;copyTextures=1;exportTriangles=1;exportCgfxFileReferences=1;
+			isSampling=0;curveConstrainSampling=0;removeStaticCurves=1;exportPolygonMeshes=1;exportLights=1;
+			exportCameras=1;exportJointsAndSkin=1;exportAnimations=1;exportInvisibleNodes=0;exportDefaultCameras=0;
+			exportTexCoords=1;exportNormals=1;exportNormalsPerVertex=1;exportVertexColors=1;exportVertexColorsPerVertex=1;
+			exportTexTangents=0;exportTangents=0;exportReferencedMaterials=0;exportMaterialsOnly=0;
+			exportXRefs=1;dereferenceXRefs=1;exportCameraAsLookat=0;cameraXFov=0;cameraYFov=1;doublePrecision=0
+		</comments>
+      <source_data>file:///C:/Users/Levis/Desktop/Poly/MAYA_Betaville/Bville_Project/scenes/NewYorkCity_Scene/Boroughs/Brooklyn/Downtown_BK/BK_Massing_1.0.mb</source_data>
+    </contributor>
+    <created>2011-08-01T18:34:24</created>
+    <modified>2011-08-01T18:34:24</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Y_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="A_BetaVille_LImestone_3" name="BK_1_A_BetaVille_LImestone_4">
+      <instance_effect url="#A_BetaVille_LImestone_3-fx"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="A_BetaVille_LImestone_3-fx">
+      <profile_COMMON>
+        <technique sid="common">
+          <lambert>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>0.88 0.696124 0.35464 1</color>
+            </diffuse>
+            <transparent opaque="RGB_ZERO">
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </lambert>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="polySurfaceShape19133" name="SBShape208504">
+      <mesh>
+        <source id="polySurfaceShape19133-positions" name="polySurfaceShape19133-positions">
+          <float_array id="polySurfaceShape19133-positions-array" count="24">-122.163 17.04438 1802.128 -127.1376 17.54687 1816.58 -133.2602 17.53591 1814.328 -127.7508 17.0201 1799.617 -122.0168 32.00102 1801.658 -126.9914 32.50353 1816.111 -133.1143 32.49256 1813.858 -127.6046 31.97675 1799.147</float_array>
+          <technique_common>
+            <accessor source="#polySurfaceShape19133-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="polySurfaceShape19133-normals" name="polySurfaceShape19133-normals">
+          <float_array id="polySurfaceShape19133-normals-array" count="72">0.00976102 0.9994596 -0.03138938 0.00976102 0.9994596 -0.03138938 0.00976102 0.9994596 -0.03138938 0.00976102 0.9994596 -0.03138938 -0.00976102 -0.9994596 0.03138938 -0.00976102 -0.9994596 0.03138938 -0.00976102 -0.9994596 0.03138938 -0.00976102 -0.9994596 0.03138938 0.9455659 9.85e-4 0.3254293 0.9455659 9.85e-4 0.3254293 0.9455659 9.85e-4 0.3254293 0.9455659 9.85e-4 0.3254293 -0.3451994 0.032828 0.937955 -0.3451994 0.032828 0.937955 -0.3451994 0.032828 0.937955 -0.3451994 0.032828 0.937955 -0.9364925 -0.001867 -0.3506826 -0.9364925 -0.001867 -0.3506826 -0.9364925 -0.001867 -0.3506826 -0.9364925 -0.001867 -0.3506826 0.4097564 -0.03263401 -0.911611 0.4097564 -0.03263401 -0.911611 0.4097564 -0.03263401 -0.911611 0.4097564 -0.03263401 -0.911611</float_array>
+          <technique_common>
+            <accessor source="#polySurfaceShape19133-normals-array" count="24" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="polySurfaceShape19133-polySurfaceShape19133-polySurfaceShape19133-map1" name="polySurfaceShape19133-polySurfaceShape19133-polySurfaceShape19133-map1">
+          <float_array id="polySurfaceShape19133-polySurfaceShape19133-polySurfaceShape19133-map1-array" count="24">0.343435 0.106665 -0.050506 0.846667 -0.505052 0.733332 -0.070709 -0.020001 0.343435 0.106665 -0.070709 -0.020001 -0.505052 0.733332 -0.050506 0.846667 0.343435 0.106665 -0.050506 0.846667 -0.505052 0.733332 -0.070709 -0.020001</float_array>
+          <technique_common>
+            <accessor source="#polySurfaceShape19133-polySurfaceShape19133-polySurfaceShape19133-map1-array" count="12" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="polySurfaceShape19133-vertices" name="polySurfaceShape19133-vertices">
+          <input semantic="POSITION" source="#polySurfaceShape19133-positions"/>
+        </vertices>
+        <triangles material="BK_1_A_BetaVille_LImestone_3SG1" count="12">
+          <input semantic="VERTEX" source="#polySurfaceShape19133-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#polySurfaceShape19133-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#polySurfaceShape19133-polySurfaceShape19133-polySurfaceShape19133-map1" offset="2" set="0"/>
+          <p>7 0 3 6 1 2 4 2 0 4 2 0 6 1 2 5 3 1 1 4 7 2 5 6 0 6 4 0 6 4 2 5 6 3 7 5 0 8 8 4 9 0 1 10 9 1 10 9 4 9 0 5 11 1 1 12 9 5 13 1 2 14 10 2 14 10 5 13 1 6 15 2 2 16 10 6 17 2 3 18 11 3 18 11 6 17 2 7 19 3 3 20 11 7 21 3 0 22 8 0 22 8 7 21 3 4 23 0</p>
+        </triangles>
+      </mesh>
+      <extra>
+        <technique profile="OpenCOLLADAMaya">
+          <originalMayaNodeId>SBShape208504</originalMayaNodeId>
+          <double_sided>1</double_sided>
+        </technique>
+      </extra>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="VisualSceneNode" name="BK_Massing_1.0">
+      <node id="polySurface19042" name="SB208504" type="NODE">
+        <translate sid="translate">0 0 0</translate>
+        <translate sid="rotatePivot">-127.6385 24.76181 1807.864</translate>
+        <rotate sid="rotateZ">0 0 1 0</rotate>
+        <rotate sid="rotateY">0 1 0 0</rotate>
+        <rotate sid="rotateX">1 0 0 0</rotate>
+        <translate sid="rotatePivotInverse">127.6385 -24.76181 -1807.864</translate>
+        <translate sid="scalePivot">-127.6385 24.76181 1807.864</translate>
+        <scale sid="scale">1 1 1</scale>
+        <translate sid="scalePivotInverse">127.6385 -24.76181 -1807.864</translate>
+        <instance_geometry url="#polySurfaceShape19133">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="BK_1_A_BetaVille_LImestone_3SG1" target="#A_BetaVille_LImestone_3"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADAMaya">
+            <originalMayaNodeId>SB208504</originalMayaNodeId>
+          </technique>
+        </extra>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#VisualSceneNode"/>
+  </scene>
+</COLLADA>
