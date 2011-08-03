@@ -9,12 +9,12 @@ import org.jdom.Document;
  * @author Skye Book
  *
  */
-public class AnchoredTransformer extends Transformer {
+public class CenteredTransformer extends Transformer {
 
 	/**
 	 * @param collada
 	 */
-	public AnchoredTransformer(Document collada) {
+	public CenteredTransformer(Document collada) {
 		super(collada);
 		// TODO Auto-generated constructor stub
 	}
