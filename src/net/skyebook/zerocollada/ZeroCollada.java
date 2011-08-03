@@ -65,6 +65,7 @@ public class ZeroCollada {
 			SAXBuilder builder = new SAXBuilder();
 			Document dom = builder.build(colladaFile);
 			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom);
+			ct.writeColladaToFile(new File(colladaFile.toString().substring(0, colladaFile.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
 		}
 		else{
 			// Then why are we here?
