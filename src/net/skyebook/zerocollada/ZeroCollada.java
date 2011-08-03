@@ -17,7 +17,7 @@ import org.apache.commons.cli.PosixParser;
  * @author Skye Book
  *
  */
-public class Main {
+public class ZeroCollada {
 	
 	private static Options options;
 
@@ -30,7 +30,7 @@ public class Main {
 		optionsSetup();
 		
 		HelpFormatter help = new HelpFormatter();
-		help.printHelp("Transformer", options);
+		help.printHelp("zerocollada", options);
 		
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = parser.parse(options, args);
