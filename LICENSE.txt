@@ -1,0 +1,16 @@
+===================================
+          + ZeroCollada +
+===================================
+
+Licensing
+
+	ZeroCollada
+		The ZeroCollada sources are licensed under GPLv3.  The headerof
+	each file contains a notification of such and the full license can
+	be read online at <http://www.gnu.org/licenses/>.
+	
+	Apache Commons CLI
+		See LICENSE.txt in lib/commons-cli-1.2
+		
+	JDOM
+		See LICENSE.txt in lib/jdom
