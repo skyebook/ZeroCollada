@@ -26,6 +26,7 @@ import net.skyebook.zerocollada.structure.Vector3;
 import net.skyebook.zerocollada.structure.Vector3d;
 import net.skyebook.zerocollada.structure.Vector3f;
 
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -39,6 +40,8 @@ import org.jdom.output.XMLOutputter;
 public abstract class Transformer {
 	
 	private Document colladaDoc;
+	private String positionsSourceID;
+	private Element positionsElement;
 
 	/**
 	 * 
@@ -48,6 +51,7 @@ public abstract class Transformer {
 		
 		// Performs the transformation
 		scanCollada();
+		
 	}
 
 	/**
@@ -70,7 +74,7 @@ public abstract class Transformer {
 	 * Perform the specified transformation
 	 * @return
 	 */
-	public abstract Document doTransformation(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement);
+	public abstract void doTransformation(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement);
 
 	/**
 	 * Generates the filename for this file
@@ -83,10 +87,10 @@ public abstract class Transformer {
 	 * @return
 	 */
 	protected ArrayList<Vector3> scanCollada(){
-		String positionsSourceID = findVertices(colladaDoc.getRootElement());
+		findVertices(colladaDoc.getRootElement());
 
 		if(positionsSourceID!=null){
-			Element positionsElement = findSource(colladaDoc.getRootElement(), positionsSourceID);
+			findSource(colladaDoc.getRootElement(), positionsSourceID);
 			if(positionsElement.getChildren().size()>0){
 				for(int i=0; i<positionsElement.getChildren().size(); i++){
 					Element child = (Element)positionsElement.getChildren().get(i);
@@ -115,7 +119,7 @@ public abstract class Transformer {
 	}
 
 	protected void rewriteArray(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement){
-		ArrayList<String> order = getVertexOrder(positionsElement);
+		ArrayList<String> order = getVertexOrder();
 
 		StringBuilder sb = new StringBuilder();
 		for(Vector3<?> v : vertices){
@@ -132,8 +136,27 @@ public abstract class Transformer {
 		arrayElement.setText(arrayString);
 	}
 
-	private ArrayList<String> getVertexOrder(Element positionsElement){
-		Element accessor = positionsElement.getChild("technique_common").getChild("accessor");
+	private ArrayList<String> getVertexOrder(){
+		Element technique = null;
+		for(int i=0; i<positionsElement.getChildren().size(); i++){
+			if(((Element)positionsElement.getChildren().get(i)).getName().equals("technique_common")){
+				technique = ((Element)positionsElement.getChildren().get(i));
+				break;
+			}
+		}
+		if(technique==null) System.out.println("Couldn't find technique");
+		
+		Element accessor = null;
+		for(int i=0; i<technique.getChildren().size(); i++){
+			if(((Element)technique.getChildren().get(i)).getName().equals("accessor")){
+				accessor = ((Element)technique.getChildren().get(i));
+				break;
+			}
+		}
+		if(accessor==null) System.out.println("Couldn't find accessor");
+		
+		//Element accessor = positionsElement.getChild("technique_common").getChild("accessor");
+		//Element accessor = ((Element)positionsElement.getParent()).getChild("technique_common").getChild("accessor");
 
 		// get the x, y, z order
 		ArrayList<String> order = new ArrayList<String>();
@@ -147,17 +170,16 @@ public abstract class Transformer {
 	private ArrayList<Vector3> createFloatArray(Element positionsElement, Element arrayElement){
 		ArrayList<Vector3> vertices = new ArrayList<Vector3>();
 
-		ArrayList<String> order = getVertexOrder(positionsElement);
+		ArrayList<String> order = getVertexOrder();
 
 		// read from the array
 		String[] data = arrayElement.getText().split(" ");
-		for(int i=0; i<data.length; i++){
-			float[] set = new float[]{3};
+		System.out.println("There are " + data.length + " numbers");
+		for(int i=0; i<data.length; i+=3){
+			float[] set = new float[3];
 			set[0] = Float.parseFloat(data[i]);
-			i++;
-			set[1] = Float.parseFloat(data[i]);
-			i++;
-			set[2] = Float.parseFloat(data[i]);
+			set[1] = Float.parseFloat(data[i+1]);
+			set[2] = Float.parseFloat(data[i+2]);
 
 			Vector3f vertex = new Vector3f(0f,0f,0f);
 			for(int j=0; j<3; j++){
@@ -174,7 +196,7 @@ public abstract class Transformer {
 	private ArrayList<Vector3> createDoubleArray(Element positionsElement, Element arrayElement){
 		ArrayList<Vector3> vertices = new ArrayList<Vector3>();
 
-		ArrayList<String> order = getVertexOrder(positionsElement);
+		ArrayList<String> order = getVertexOrder();
 
 		// read from the array
 		String[] data = arrayElement.getText().split(" ");
@@ -199,37 +221,44 @@ public abstract class Transformer {
 	}
 
 
-	private Element findSource(Element e, String id){
+	private void findSource(Element e, String id){
 		if(e.getName().equals("source")){
-			if(id.contains(e.getAttributeValue("id"))) return e;
+			if(id.contains(e.getAttributeValue("id"))) positionsElement = e;
 		}
 		else if(e.getChildren().size()>0){
 			for(Object o : e.getChildren()){
-				return findSource((Element)o, id);
+				findSource((Element)o, id);
 			}
 		}
-		return null;
 	}
-
-	private String findVertices(Element e){
+	
+	private void findVertices(Element e){
+		/*
+		Element vertices = e.getChild("COLLADA").getChild("library_geometries").getChild("geometry").getChild("mesh").getChild("vertices");
+		for(Object a : vertices.getAttributes()){
+			System.out.println(((Attribute)a).getName());
+		}
+		*/
+		
+		//System.out.println("Element name: " + e.getName());
 		if(e.getName().equals("vertices")){
 			for(Object o : e.getChildren()){
 				if (((Element)o).getAttributeValue("semantic").equals("POSITION")){
-					return ((Element)o).getAttributeValue("source");
+					positionsSourceID = ((Element)o).getAttributeValue("source");
+					System.out.println("Positions: " + positionsSourceID);
+					return;
 				}
 			}
-			return null;
 		}
 		else if(e.getChildren().size()>0){
-			for(Object o : e.getChildren()){
-				return findVertices((Element)o);
+			for(int i=0; i<e.getChildren().size(); i++){
+				Object o = e.getChildren().get(i);
+				findVertices((Element)o);
 			}
 		}
 		else{
-			System.err.println("A vertices element could not be found!");
-			return null;
+			//System.err.println("A vertices element could not be found!");
 		}
-		return null;
 	}
 
 }
