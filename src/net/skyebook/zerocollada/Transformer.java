@@ -42,7 +42,9 @@ public abstract class Transformer {
 	private String positionsSourceID;
 	private Element positionsElement;
 	
+	protected boolean handleX=true;
 	protected boolean handleY=false;
+	protected boolean handleZ=true;
 
 	/**
 	 * 
@@ -133,8 +135,9 @@ public abstract class Transformer {
 		}
 
 		String arrayString = sb.toString();
-		// cut out the last space
-		arrayString.substring(0, arrayString.length()-1);
+		
+		// cut out the last space -> It appears that JDOM does this for us
+		//arrayString.substring(0, arrayString.length()-1);
 		arrayElement.setText(arrayString);
 	}
 
