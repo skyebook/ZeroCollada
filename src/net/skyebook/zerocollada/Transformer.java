@@ -44,6 +44,8 @@ public abstract class Transformer {
 	 * 
 	 */
 	public Transformer(Document collada) {
+		colladaDoc = collada;
+		
 		// Performs the transformation
 		scanCollada();
 	}
