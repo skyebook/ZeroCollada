@@ -87,10 +87,12 @@ public class ZeroCollada {
 		Option includeX = new Option(ZCOpts.includeX, "Include the X-Axis in this transform calculation");
 		Option includeY = new Option(ZCOpts.includeY, "Include the Y-Axis in this transform calculation");
 		Option includeZ = new Option(ZCOpts.includeX, "Include the Z-Axis in this transform calculation");
-		Option anchorCenter = new Option(ZCOpts.anchorCenter, "Anchors the transformation to the middle of the *range* of coordinates (not the average)");
+		Option anchorCenter = new Option(ZCOpts.anchorCenter, "NOT IMPLEMENTED YET -- Anchors the transformation to the middle of the *range* of coordinates (not the average)");
 
 		options.addOption(transform);
+		options.addOption(includeX);
 		options.addOption(includeY);
+		options.addOption(includeZ);
 		options.addOption(anchorCenter);
 	}
 
