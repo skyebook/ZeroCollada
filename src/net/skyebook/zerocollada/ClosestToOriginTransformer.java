@@ -37,8 +37,8 @@ public class ClosestToOriginTransformer extends Transformer {
 	/**
 	 * @param collada
 	 */
-	public ClosestToOriginTransformer(Document collada, boolean handleY) {
-		super(collada, handleY);
+	public ClosestToOriginTransformer(Document collada, boolean handleX, boolean handleY, boolean handleZ) {
+		super(collada, handleX, handleY, handleZ);
 	}
 
 	/*

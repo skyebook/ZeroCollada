@@ -65,7 +65,7 @@ public class ZeroCollada {
 			SAXBuilder builder = new SAXBuilder();
 			Document dom = builder.build(colladaFile);
 			
-			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeY));
+			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeX), cmd.hasOption(ZCOpts.includeY), cmd.hasOption(ZCOpts.includeZ));
 			ct.writeColladaToFile(new File(colladaFile.toString().substring(0, colladaFile.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
 		}
 		else{
@@ -84,7 +84,9 @@ public class ZeroCollada {
 		options = new Options();
 
 		Option transform = new Option(ZCOpts.transform, "Perform a transform.  Defaults to closet-to-origin anchor without consideration for the Y-axis");		
+		Option includeX = new Option(ZCOpts.includeX, "Include the X-Axis in this transform calculation");
 		Option includeY = new Option(ZCOpts.includeY, "Include the Y-Axis in this transform calculation");
+		Option includeZ = new Option(ZCOpts.includeX, "Include the Z-Axis in this transform calculation");
 		Option anchorCenter = new Option(ZCOpts.anchorCenter, "Anchors the transformation to the middle of the *range* of coordinates (not the average)");
 
 		options.addOption(transform);

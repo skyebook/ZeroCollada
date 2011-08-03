@@ -52,9 +52,11 @@ public abstract class Transformer {
 	/**
 	 * 
 	 */
-	public Transformer(Document collada, boolean handleY) {
+	public Transformer(Document collada, boolean handleX, boolean handleY, boolean handleZ) {
 		colladaDoc=collada;
+		this.handleX=handleX;
 		this.handleY=handleY;
+		this.handleZ=handleZ;
 
 		// Performs the transformation
 		scanCollada();
