@@ -1,6 +1,20 @@
-/**
- * 
- */
+/**  
+*  Zero Collada - In place operations on COLLADA markup
+*  Copyright (C) 2011 Skye Book
+*  
+*  This program is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package net.skyebook.zerocollada;
 
 import java.io.File;
@@ -23,14 +37,15 @@ import org.jdom.output.XMLOutputter;
  *
  */
 public abstract class Transformer {
-
+	
 	private Document colladaDoc;
 
 	/**
 	 * 
 	 */
 	public Transformer(Document collada) {
-		// TODO Auto-generated constructor stub
+		// Performs the transformation
+		scanCollada();
 	}
 
 	/**
@@ -59,13 +74,13 @@ public abstract class Transformer {
 	 * Generates the filename for this file
 	 * @return
 	 */
-	public abstract String newFileName();
+	public abstract String newFileNameSuffix();
 
 	/**
 	 * 
 	 * @return
 	 */
-	protected ArrayList<Vector3<?>> scanCollada(){
+	protected ArrayList<Vector3> scanCollada(){
 		String positionsSourceID = findVertices(colladaDoc.getRootElement());
 
 		if(positionsSourceID!=null){
@@ -80,16 +95,14 @@ public abstract class Transformer {
 
 							doTransformation(vertices, positionsElement, child);
 
-							// leave the loop now
-							break;
+							return vertices;
 						}
 						else if(child.getName().startsWith("double")){
 							ArrayList<Vector3> vertices = createDoubleArray(positionsElement, child);
 
 							doTransformation(vertices, positionsElement, child);
 
-							// leave the loop now
-							break;
+							return vertices;
 						}
 					}
 				}
@@ -98,44 +111,6 @@ public abstract class Transformer {
 
 		return null;
 	}
-
-	/*
-	protected void rewriteFloatArray(ArrayList<Vector3f> vertices, Element positionsElement, Element arrayElement){
-		ArrayList<String> order = getVertexOrder(positionsElement);
-
-		StringBuilder sb = new StringBuilder();
-		for(Vector3f v : vertices){
-			for(int i=0; i<3; i++){
-				if(order.get(i).equals("X")) sb.append(v.x+" ");
-				else if(order.get(i).equals("Y")) sb.append(v.y+" ");
-				else if(order.get(i).equals("Z")) sb.append(v.z+" ");
-			}
-		}
-
-		String arrayString = sb.toString();
-		// cut out the last space
-		arrayString.substring(0, arrayString.length()-1);
-		arrayElement.setText(arrayString);
-	}
-
-	protected void rewriteDoubleArray(ArrayList<Vector3d> vertices, Element positionsElement, Element arrayElement){
-		ArrayList<String> order = getVertexOrder(positionsElement);
-
-		StringBuilder sb = new StringBuilder();
-		for(Vector3d v : vertices){
-			for(int i=0; i<3; i++){
-				if(order.get(i).equals("X")) sb.append(v.x+" ");
-				else if(order.get(i).equals("Y")) sb.append(v.y+" ");
-				else if(order.get(i).equals("Z")) sb.append(v.z+" ");
-			}
-		}
-
-		String arrayString = sb.toString();
-		// cut out the last space
-		arrayString.substring(0, arrayString.length()-1);
-		arrayElement.setText(arrayString);
-	}
-	 */
 
 	protected void rewriteArray(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement){
 		ArrayList<String> order = getVertexOrder(positionsElement);

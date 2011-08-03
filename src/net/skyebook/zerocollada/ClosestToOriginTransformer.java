@@ -1,6 +1,20 @@
-/**
- * 
- */
+/**  
+*  Zero Collada - In place operations on COLLADA markup
+*  Copyright (C) 2011 Skye Book
+*  
+*  This program is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package net.skyebook.zerocollada;
 
 import java.util.ArrayList;
@@ -14,14 +28,17 @@ import org.jdom.Element;
  * @author Skye Book
  *
  */
-public class CenteredTransformer extends Transformer {
+public class ClosestToOriginTransformer extends Transformer {
+	
+	private Number xMax = null;
+	private Number yMax = null;
+	private Number zMax = null;
 
 	/**
 	 * @param collada
 	 */
-	public CenteredTransformer(Document collada) {
+	public ClosestToOriginTransformer(Document collada) {
 		super(collada);
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -30,10 +47,6 @@ public class CenteredTransformer extends Transformer {
 	 */
 	@SuppressWarnings("unchecked")
 	public Document doTransformation(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement) {
-
-		Number xMax = null;
-		Number yMax = null;
-		Number zMax = null;
 
 		for(Vector3<?> v : vertices){
 			// if one is NaN, all are NaN.. initialize them here
@@ -158,9 +171,8 @@ public class CenteredTransformer extends Transformer {
 	 * @see net.skyebook.zerocollada.Transformer#newFileName()
 	 */
 	@Override
-	public String newFileName() {
-		// TODO Auto-generated method stub
-		return null;
+	public String newFileNameSuffix() {
+		return("x_"+xMax.toString()+"y_"+yMax.toString()+"z_"+zMax.toString());
 	}
 
 }
