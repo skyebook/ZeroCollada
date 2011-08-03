@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import net.skyebook.zerocollada.structure.Vector3;
-import net.skyebook.zerocollada.structure.Vector3d;
-import net.skyebook.zerocollada.structure.Vector3f;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -186,7 +184,7 @@ public abstract class Transformer {
 			set[1] = Float.parseFloat(data[i+1]);
 			set[2] = Float.parseFloat(data[i+2]);
 
-			Vector3f vertex = new Vector3f(0f,0f,0f);
+			Vector3<Float> vertex = new Vector3<Float>(0f,0f,0f);
 			for(int j=0; j<3; j++){
 				if(order.get(j).equals("X")) vertex.x=set[j];
 				else if(order.get(j).equals("Y")) vertex.y=set[j];
@@ -213,7 +211,7 @@ public abstract class Transformer {
 			i++;
 			set[2] = Double.parseDouble(data[i]);
 
-			Vector3d vertex = new Vector3d(0d,0d,0d);
+			Vector3<Double> vertex = new Vector3<Double>(0d,0d,0d);
 			for(int j=0; j<3; j++){
 				if(order.get(j).equals("X")) vertex.x=set[j];
 				else if(order.get(j).equals("Y")) vertex.y=set[j];
