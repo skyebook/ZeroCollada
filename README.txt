@@ -15,6 +15,15 @@ Intro
 	
 Usage
 	java -jar ZeroCollada.jar [options] /full/path/to/file.dae
+	
+	Examples:
+		// Transform the model closer to the origin in the amount of the furthest distance {x,z} from the origin
+		// RESULT: /full/path/to/filex_{X_CHANGE}z_{Z_CHANGE}.dae
+		java -jar ZeroCollada.jar -txz /full/path/to/file.dae
+		
+		// Transform the model closer to the origin in the amount of the furthest distance {x,y,z} from the origin
+		// RESULT: /full/path/to/filex_{X_CHANGE}y_{Y_CHANGE}z_{Z_CHANGE}.dae
+		java -jar ZeroCollada.jar -txyz /full/path/to/file.dae
 
 Building
 	ANT script to come.  For now, Eclipse users can do Export->Runnable JAR File.
