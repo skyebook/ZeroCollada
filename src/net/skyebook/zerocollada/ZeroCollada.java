@@ -64,7 +64,8 @@ public class ZeroCollada {
 			// Do a transform that brings us as close to zero as possible
 			SAXBuilder builder = new SAXBuilder();
 			Document dom = builder.build(colladaFile);
-			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, false);
+			
+			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeY));
 			ct.writeColladaToFile(new File(colladaFile.toString().substring(0, colladaFile.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
 		}
 		else{
