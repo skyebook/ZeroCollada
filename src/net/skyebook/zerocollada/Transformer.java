@@ -3,6 +3,9 @@
  */
 package net.skyebook.zerocollada;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import net.skyebook.zerocollada.structure.Vector3;
@@ -11,6 +14,8 @@ import net.skyebook.zerocollada.structure.Vector3f;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 /**
  * For Transforming a COLLADA file
@@ -19,13 +24,29 @@ import org.jdom.Element;
  */
 public abstract class Transformer {
 
-	private Document rawCollada;
+	private Document colladaDoc;
 
 	/**
 	 * 
 	 */
 	public Transformer(Document collada) {
 		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * Writes the COLLADA document to a file
+	 * @param file The file to write the COLLADA document to
+	 * @throws IOException
+	 */
+	public void writeColladaToFile(File file) throws IOException{
+		if(!file.exists()){
+			file.createNewFile();
+		}
+		XMLOutputter outputter = new XMLOutputter();
+		outputter.setFormat(Format.getPrettyFormat());
+		FileWriter writer = new FileWriter(file);
+		outputter.output(colladaDoc, writer);
+		writer.close();
 	}
 
 	/**
@@ -35,10 +56,10 @@ public abstract class Transformer {
 	public abstract Document doTransformation();
 
 	private ArrayList<Vector3<?>> scanCollada(){
-		String positionsSourceID = findVertices(rawCollada.getRootElement());
+		String positionsSourceID = findVertices(colladaDoc.getRootElement());
 
 		if(positionsSourceID!=null){
-			Element positionsElement = findSource(rawCollada.getRootElement(), positionsSourceID);
+			Element positionsElement = findSource(colladaDoc.getRootElement(), positionsSourceID);
 			if(positionsElement.getChildren().size()>0){
 				for(int i=0; i<positionsElement.getChildren().size(); i++){
 					Element child = (Element)positionsElement.getChildren().get(i);
@@ -49,7 +70,7 @@ public abstract class Transformer {
 							float xMax = Float.NaN;
 							float yMax = Float.NaN;
 							float zMax = Float.NaN;
-							
+
 							for(Vector3f v : vertices){
 								// if one is NaN, all are NaN.. initialize them here
 								if(Float.isNaN(xMax)){
@@ -58,22 +79,22 @@ public abstract class Transformer {
 									zMax = v.z;
 									continue;
 								}
-								
+
 								if(v.x>xMax) xMax=v.x;
 								if(v.y>yMax) yMax=v.y;
 								if(v.z>zMax) zMax=v.z;
 							}
-							
+
 							for(Vector3f v : vertices){
 								v.x = v.x-xMax;
 								v.y = v.y-yMax;
 								v.z = v.z-zMax;
 							}
-							
+
 							rewriteFloatArray(vertices, positionsElement, child);
-							
+
 							System.out.println("Offset " + xMax +", "+yMax+", "+zMax);
-							
+
 							// leave the loop now
 							break;
 						}
@@ -82,7 +103,7 @@ public abstract class Transformer {
 							double xMax = Double.NaN;
 							double yMax = Double.NaN;
 							double zMax = Double.NaN;
-							
+
 							for(Vector3d v : vertices){
 								// if one is NaN, all are NaN.. initialize them here
 								if(Double.isNaN(xMax)){
@@ -91,22 +112,22 @@ public abstract class Transformer {
 									zMax = v.z;
 									continue;
 								}
-								
+
 								if(v.x>xMax) xMax=v.x;
 								if(v.y>yMax) yMax=v.y;
 								if(v.z>zMax) zMax=v.z;
 							}
-							
+
 							for(Vector3d v : vertices){
 								v.x = v.x-xMax;
 								v.y = v.y-yMax;
 								v.z = v.z-zMax;
 							}
-							
+
 							rewriteDoubleArray(vertices, positionsElement, child);
-							
+
 							System.out.println("Offset " + xMax +", "+yMax+", "+zMax);
-							
+
 							// leave the loop now
 							break;
 						}
@@ -117,10 +138,10 @@ public abstract class Transformer {
 
 		return null;
 	}
-	
+
 	private void rewriteFloatArray(ArrayList<Vector3f> vertices, Element positionsElement, Element arrayElement){
 		ArrayList<String> order = getVertexOrder(positionsElement);
-		
+
 		StringBuilder sb = new StringBuilder();
 		for(Vector3f v : vertices){
 			for(int i=0; i<3; i++){
@@ -129,16 +150,16 @@ public abstract class Transformer {
 				else if(order.get(i).equals("Z")) sb.append(v.z+" ");
 			}
 		}
-		
+
 		String arrayString = sb.toString();
 		// cut out the last space
 		arrayString.substring(0, arrayString.length()-1);
 		arrayElement.setText(arrayString);
 	}
-	
+
 	private void rewriteDoubleArray(ArrayList<Vector3d> vertices, Element positionsElement, Element arrayElement){
 		ArrayList<String> order = getVertexOrder(positionsElement);
-		
+
 		StringBuilder sb = new StringBuilder();
 		for(Vector3d v : vertices){
 			for(int i=0; i<3; i++){
@@ -147,7 +168,7 @@ public abstract class Transformer {
 				else if(order.get(i).equals("Z")) sb.append(v.z+" ");
 			}
 		}
-		
+
 		String arrayString = sb.toString();
 		// cut out the last space
 		arrayString.substring(0, arrayString.length()-1);
@@ -192,12 +213,12 @@ public abstract class Transformer {
 		}
 		return vertices;
 	}
-	
+
 	private ArrayList<Vector3d> createDoubleArray(Element positionsElement, Element arrayElement){
 		ArrayList<Vector3d> vertices = new ArrayList<Vector3d>();
-		
+
 		ArrayList<String> order = getVertexOrder(positionsElement);
-		
+
 		// read from the array
 		String[] data = arrayElement.getText().split(" ");
 		for(int i=0; i<data.length; i++){
@@ -207,14 +228,14 @@ public abstract class Transformer {
 			set[1] = Double.parseDouble(data[i]);
 			i++;
 			set[2] = Double.parseDouble(data[i]);
-			
+
 			Vector3d vertex = new Vector3d(0d,0d,0d);
 			for(int j=0; j<3; j++){
 				if(order.get(j).equals("X")) vertex.x=set[j];
 				else if(order.get(j).equals("Y")) vertex.y=set[j];
 				else if(order.get(j).equals("Z")) vertex.z=set[j];
 			}
-			
+
 			vertices.add(vertex);
 		}
 		return vertices;
