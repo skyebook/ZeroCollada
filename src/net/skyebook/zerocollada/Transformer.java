@@ -32,7 +32,7 @@ public abstract class Transformer {
 	public Transformer(Document collada) {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * Writes the COLLADA document to a file
 	 * @param file The file to write the COLLADA document to
@@ -53,9 +53,19 @@ public abstract class Transformer {
 	 * Perform the specified transformation
 	 * @return
 	 */
-	public abstract Document doTransformation();
+	public abstract Document doTransformation(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement);
 
-	private ArrayList<Vector3<?>> scanCollada(){
+	/**
+	 * Generates the filename for this file
+	 * @return
+	 */
+	public abstract String newFileName();
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected ArrayList<Vector3<?>> scanCollada(){
 		String positionsSourceID = findVertices(colladaDoc.getRootElement());
 
 		if(positionsSourceID!=null){
@@ -66,67 +76,17 @@ public abstract class Transformer {
 					// check to see if we've struck the array Element
 					if(child.getName().contains("_array")){
 						if(child.getName().startsWith("float")){
-							ArrayList<Vector3f> vertices = createFloatArray(positionsElement, child);
-							float xMax = Float.NaN;
-							float yMax = Float.NaN;
-							float zMax = Float.NaN;
+							ArrayList<Vector3> vertices = createFloatArray(positionsElement, child);
 
-							for(Vector3f v : vertices){
-								// if one is NaN, all are NaN.. initialize them here
-								if(Float.isNaN(xMax)){
-									xMax = v.x;
-									yMax = v.y;
-									zMax = v.z;
-									continue;
-								}
-
-								if(v.x>xMax) xMax=v.x;
-								if(v.y>yMax) yMax=v.y;
-								if(v.z>zMax) zMax=v.z;
-							}
-
-							for(Vector3f v : vertices){
-								v.x = v.x-xMax;
-								v.y = v.y-yMax;
-								v.z = v.z-zMax;
-							}
-
-							rewriteFloatArray(vertices, positionsElement, child);
-
-							System.out.println("Offset " + xMax +", "+yMax+", "+zMax);
+							doTransformation(vertices, positionsElement, child);
 
 							// leave the loop now
 							break;
 						}
 						else if(child.getName().startsWith("double")){
-							ArrayList<Vector3d> vertices = createDoubleArray(positionsElement, child);
-							double xMax = Double.NaN;
-							double yMax = Double.NaN;
-							double zMax = Double.NaN;
+							ArrayList<Vector3> vertices = createDoubleArray(positionsElement, child);
 
-							for(Vector3d v : vertices){
-								// if one is NaN, all are NaN.. initialize them here
-								if(Double.isNaN(xMax)){
-									xMax = v.x;
-									yMax = v.y;
-									zMax = v.z;
-									continue;
-								}
-
-								if(v.x>xMax) xMax=v.x;
-								if(v.y>yMax) yMax=v.y;
-								if(v.z>zMax) zMax=v.z;
-							}
-
-							for(Vector3d v : vertices){
-								v.x = v.x-xMax;
-								v.y = v.y-yMax;
-								v.z = v.z-zMax;
-							}
-
-							rewriteDoubleArray(vertices, positionsElement, child);
-
-							System.out.println("Offset " + xMax +", "+yMax+", "+zMax);
+							doTransformation(vertices, positionsElement, child);
 
 							// leave the loop now
 							break;
@@ -139,7 +99,8 @@ public abstract class Transformer {
 		return null;
 	}
 
-	private void rewriteFloatArray(ArrayList<Vector3f> vertices, Element positionsElement, Element arrayElement){
+	/*
+	protected void rewriteFloatArray(ArrayList<Vector3f> vertices, Element positionsElement, Element arrayElement){
 		ArrayList<String> order = getVertexOrder(positionsElement);
 
 		StringBuilder sb = new StringBuilder();
@@ -157,11 +118,30 @@ public abstract class Transformer {
 		arrayElement.setText(arrayString);
 	}
 
-	private void rewriteDoubleArray(ArrayList<Vector3d> vertices, Element positionsElement, Element arrayElement){
+	protected void rewriteDoubleArray(ArrayList<Vector3d> vertices, Element positionsElement, Element arrayElement){
 		ArrayList<String> order = getVertexOrder(positionsElement);
 
 		StringBuilder sb = new StringBuilder();
 		for(Vector3d v : vertices){
+			for(int i=0; i<3; i++){
+				if(order.get(i).equals("X")) sb.append(v.x+" ");
+				else if(order.get(i).equals("Y")) sb.append(v.y+" ");
+				else if(order.get(i).equals("Z")) sb.append(v.z+" ");
+			}
+		}
+
+		String arrayString = sb.toString();
+		// cut out the last space
+		arrayString.substring(0, arrayString.length()-1);
+		arrayElement.setText(arrayString);
+	}
+	 */
+
+	protected void rewriteArray(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement){
+		ArrayList<String> order = getVertexOrder(positionsElement);
+
+		StringBuilder sb = new StringBuilder();
+		for(Vector3<?> v : vertices){
 			for(int i=0; i<3; i++){
 				if(order.get(i).equals("X")) sb.append(v.x+" ");
 				else if(order.get(i).equals("Y")) sb.append(v.y+" ");
@@ -187,8 +167,8 @@ public abstract class Transformer {
 	}
 
 
-	private ArrayList<Vector3f> createFloatArray(Element positionsElement, Element arrayElement){
-		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
+	private ArrayList<Vector3> createFloatArray(Element positionsElement, Element arrayElement){
+		ArrayList<Vector3> vertices = new ArrayList<Vector3>();
 
 		ArrayList<String> order = getVertexOrder(positionsElement);
 
@@ -214,8 +194,8 @@ public abstract class Transformer {
 		return vertices;
 	}
 
-	private ArrayList<Vector3d> createDoubleArray(Element positionsElement, Element arrayElement){
-		ArrayList<Vector3d> vertices = new ArrayList<Vector3d>();
+	private ArrayList<Vector3> createDoubleArray(Element positionsElement, Element arrayElement){
+		ArrayList<Vector3> vertices = new ArrayList<Vector3>();
 
 		ArrayList<String> order = getVertexOrder(positionsElement);
 

@@ -7,7 +7,7 @@ package net.skyebook.zerocollada.structure;
  * @author Skye Book
  *
  */
-public abstract class Vector3<T>{
+public abstract class Vector3<T extends Number>{
 	
 	public T x;
 	public T y;
