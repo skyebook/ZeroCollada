@@ -101,12 +101,20 @@ public class ZeroCollada {
 			Document dom = builder.build(file);
 			
 			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeX), cmd.hasOption(ZCOpts.includeY), cmd.hasOption(ZCOpts.includeZ));
+			file = removeOldXYZTag(file);
 			ct.writeColladaToFile(new File(file.toString().substring(0, file.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
 			// recollect the resources
 			ct = null;
 			dom = null;
 			System.gc();
 		}
+	}
+	
+	private static File removeOldXYZTag(File file){
+		if(file.toString().contains("x_")){
+			return new File(file.toString().substring(0, file.toString().indexOf("x_"))+".dae");
+		}
+		else return file;
 	}
 
 	public static void optionsSetup(){
