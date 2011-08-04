@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project ZeroCollada with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="./build/ZeroCollada.jar">
+            <manifest>
+                <attribute name="Main-Class" value="net.skyebook.zerocollada.ZeroCollada"/>
+                <attribute name="Class-Path" value=". ZeroCollada_lib/jdom.jar ZeroCollada_lib/commons-cli-1.2.jar"/>
+            </manifest>
+            <fileset dir="./bin"/>
+        </jar>
+        <delete dir="./build/ZeroCollada_lib"/>
+        <mkdir dir="./build/ZeroCollada_lib"/>
+        <copy file="./lib/jdom/jdom.jar" todir="./build/ZeroCollada_lib"/>
+        <copy file="./lib/commons-cli-1.2/commons-cli-1.2.jar" todir="./build/ZeroCollada_lib"/>
+    </target>
+</project>

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+ARGS=""
+
+for i in $*
+do
+	ARGS=$ARGS" "$i
+done
+
+echo $ARGS
