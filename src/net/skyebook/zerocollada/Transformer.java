@@ -292,7 +292,10 @@ public abstract class Transformer {
 
 	private void findSource(Element e, String id){
 		if(e.getName().equals("source")){
-			if(id.contains(e.getAttributeValue("id"))) positionsElement = e;
+			String idValue = e.getAttributeValue("id");
+			if(idValue!=null){
+				if(id.contains(idValue)) positionsElement = e;
+			}
 		}
 		else if(e.getChildren().size()>0){
 			for(Object o : e.getChildren()){
