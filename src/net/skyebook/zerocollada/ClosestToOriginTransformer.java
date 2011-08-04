@@ -110,18 +110,12 @@ public class ClosestToOriginTransformer extends Transformer {
 	@Override
 	public String newFileNameSuffix() {
 		StringBuilder suffix = new StringBuilder();
-		if(handleX){
-			suffix.append("x_");
-			suffix.append(xMax);
-		}
-		if(handleY){
-			suffix.append("y_");
-			suffix.append(yMax);
-		}
-		if(handleZ){
-			suffix.append("z_");
-			suffix.append(zMax);
-		}
+		suffix.append("x_");
+		suffix.append(handleX ? xMax : 0);
+		suffix.append("y_");
+		suffix.append(handleY ? yMax : 0);
+		suffix.append("z_");
+		suffix.append(handleZ ? zMax : 0);
 		return suffix.toString();
 	}
 
