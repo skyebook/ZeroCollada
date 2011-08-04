@@ -24,6 +24,8 @@ package net.skyebook.zerocollada;
  */
 public class ZCOpts {
 	
+	public static final String help = "h";
+
 	public static final String transform = "t";
 	
 	public static final String includeX = "x";
