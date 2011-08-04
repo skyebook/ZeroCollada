@@ -80,12 +80,6 @@ public class ZeroCollada {
 					}
 				}
 			}
-			// Do a transform that brings us as close to zero as possible
-			SAXBuilder builder = new SAXBuilder();
-			Document dom = builder.build(fileFromCommandLine);
-			
-			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeX), cmd.hasOption(ZCOpts.includeY), cmd.hasOption(ZCOpts.includeZ));
-			ct.writeColladaToFile(new File(fileFromCommandLine.toString().substring(0, fileFromCommandLine.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
 		}
 		else{
 			// Then why are we here?
@@ -108,6 +102,10 @@ public class ZeroCollada {
 			
 			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeX), cmd.hasOption(ZCOpts.includeY), cmd.hasOption(ZCOpts.includeZ));
 			ct.writeColladaToFile(new File(file.toString().substring(0, file.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
+			// recollect the resources
+			ct = null;
+			dom = null;
+			System.gc();
 		}
 	}
 
