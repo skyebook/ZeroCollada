@@ -15,33 +15,23 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.skyebook.zerocollada;
+package net.skyebook.zerocollada.geom;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
+import net.skyebook.zerocollada.ColladaManipulator;
 import net.skyebook.zerocollada.structure.Vector3;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
 /**
  * For Transforming a COLLADA file
  * @author Skye Book
  *
  */
-public abstract class Transformer {
+public abstract class GeometryTransformer extends ColladaManipulator{
 
-	private Document colladaDoc;
-	private Element modifiedElement;
 	private String positionsSourceID;
 	private Element positionsElement;
 
@@ -52,90 +42,14 @@ public abstract class Transformer {
 	/**
 	 * 
 	 */
-	public Transformer(Document collada, boolean handleX, boolean handleY, boolean handleZ) {
-		colladaDoc=collada;
+	public GeometryTransformer(Document collada, boolean handleX, boolean handleY, boolean handleZ) {
+		super(collada);
 		this.handleX=handleX;
 		this.handleY=handleY;
 		this.handleZ=handleZ;
 
 		// Performs the transformation
 		scanCollada();
-
-	}
-
-	/**
-	 * Writes the COLLADA document to a file
-	 * @param file The file to write the COLLADA document to
-	 * @throws IOException
-	 */
-	public void writeColladaToFile(File file) throws IOException{
-		if(!file.exists()){
-			file.createNewFile();
-		}
-
-		// update the date before writing the file
-		updateModifiedDateTag();
-
-		XMLOutputter outputter = new XMLOutputter();
-		outputter.setFormat(Format.getPrettyFormat());
-		FileWriter writer = new FileWriter(file);
-		outputter.output(colladaDoc, writer);
-		writer.close();
-	}
-
-	/**
-	 * Adapted from the Java forums: http://forums.sun.com/thread.jspa?messageID=768476
-	 */
-	private void updateModifiedDateTag(){
-
-		/*
-		 * create ISO 8601 formatter for Calendar objects
-		 */
-		MessageFormat iso8601 = new MessageFormat("{0,time}{1,number,+00;-00}:{2,number,00}") ;
-
-		// need to shove a date formatter that is cognizant of the
-		// calendar's time zone into the message formatter
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss") ;
-		df.setTimeZone(Calendar.getInstance().getTimeZone()) ;
-		iso8601.setFormat(0, df) ;
-
-		/*
-		 * calculate the time zone offset from UTC in hours and minutes at the current time
-		 */
-		long zoneOff = Calendar.getInstance().get(Calendar.ZONE_OFFSET) + Calendar.getInstance().get(Calendar.DST_OFFSET) ;
-		zoneOff /= 60000L ;  // in minutes
-		int zoneHrs = (int) (zoneOff / 60L) ;
-		int zoneMins = (int) (zoneOff % 60L) ;
-		if (zoneMins < 0) zoneMins = -zoneMins ;
-
-		String iso8601Date =  (iso8601.format(new Object[] {
-				Calendar.getInstance().getTime(),
-				new Integer(zoneHrs),
-				new Integer(zoneMins)
-		}
-		)) ;
-
-		// find the date of the last modification and upate it
-		findModified(colladaDoc.getRootElement());
-
-		if(modifiedElement!=null){
-			modifiedElement.setText(iso8601Date);
-		}else{
-			System.err.println("The COLLADA file had no <modified\\> element set.  The date could not be updated");
-		}
-
-	}
-
-	private void findModified(Element e){
-		if(e.getName().equals("modified")){
-			modifiedElement=e;
-			return;
-		}
-		else if(e.getChildren().size()>0){
-			for(Object o : e.getChildren()){
-				findModified((Element)o);
-			}
-		}
 	}
 
 	/**
@@ -235,7 +149,6 @@ public abstract class Transformer {
 		return order;
 	}
 
-
 	private ArrayList<Vector3> createFloatArray(Element positionsElement, Element arrayElement){
 		ArrayList<Vector3> vertices = new ArrayList<Vector3>();
 
@@ -288,7 +201,6 @@ public abstract class Transformer {
 		}
 		return vertices;
 	}
-
 
 	private void findSource(Element e, String id){
 		if(e.getName().equals("source")){

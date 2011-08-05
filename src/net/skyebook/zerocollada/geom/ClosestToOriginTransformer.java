@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.skyebook.zerocollada;
+package net.skyebook.zerocollada.geom;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ import org.jdom.Element;
  * @author Skye Book
  *
  */
-public class ClosestToOriginTransformer extends Transformer {
+public class ClosestToOriginTransformer extends GeometryTransformer {
 
 	private Number xMax;
 	private Number yMax;

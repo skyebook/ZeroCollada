@@ -20,6 +20,8 @@ package net.skyebook.zerocollada;
 import java.io.File;
 import java.io.IOException;
 
+import net.skyebook.zerocollada.geom.ClosestToOriginTransformer;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
