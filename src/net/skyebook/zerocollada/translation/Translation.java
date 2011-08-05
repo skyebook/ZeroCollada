@@ -28,32 +28,42 @@ import org.jdom.Element;
  * @author Skye Book
  *
  */
-public abstract class Translation extends ColladaManipulator{
+public class Translation extends ColladaManipulator{
+	
+	protected ArrayList<Element> translations;
 
 	/**
 	 * 
 	 */
-	public Translation(Document collada, boolean handleX, boolean handleY, boolean handleZ) {
+	public Translation(Document collada) {
 		super(collada);
 
-		// Performs the transformation
-		scanCollada();
-	}
-
-	/**
-	 * Work the translations!
-	 * @param translations
-	 */
-	public abstract void doTranslationAction(ArrayList<Element> translations);
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected void scanCollada(){
-		ArrayList<Element> translations = new ArrayList<Element>();
+		translations = new ArrayList<Element>();
 		findTranslations(colladaDoc.getRootElement(), translations);
-		doTranslationAction(translations);
+	}
+	
+	public void zeroAllTranslationsExcept(String translationSIDToLeaveIntact){
+		for(Element translation : translations){
+			String sid = translation.getAttributeValue("sid");
+			if(sid!=null){
+				if(!sid.equals(translationSIDToLeaveIntact)){
+					translation.setText("0 0 0");
+					return;
+				}
+			}
+		}
+	}
+	
+	public void zeroTranslation(String translationSIDToZero){
+		for(Element translation : translations){
+			String sid = translation.getAttributeValue("sid");
+			if(sid!=null){
+				if(sid.equals(translationSIDToZero)){
+					translation.setText("0 0 0");
+					return;
+				}
+			}
+		}
 	}
 
 	private void findTranslations(Element e, ArrayList<Element> translations){
