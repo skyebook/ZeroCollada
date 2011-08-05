@@ -1,26 +1,27 @@
 /**  
-*  Zero Collada - In place operations on COLLADA markup
-*  Copyright (C) 2011 Skye Book
-*  
-*  This program is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  This program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ *  Zero Collada - In place operations on COLLADA markup
+ *  Copyright (C) 2011 Skye Book
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.skyebook.zerocollada;
 
 import java.io.File;
 import java.io.IOException;
 
 import net.skyebook.zerocollada.geom.ClosestToOriginTransformer;
+import net.skyebook.zerocollada.translation.Translation;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -54,20 +55,19 @@ public class ZeroCollada {
 
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = parser.parse(options, args);
-		
+
 		if(args.length==0 || cmd.hasOption(ZCOpts.help)){
-			HelpFormatter help = new HelpFormatter();
-			help.printHelp(usage, options);
+			showHelp();
 		}
 
 		// was there a valid operation specified?
-		if(cmd.hasOption(ZCOpts.transform)){
+		if(hasValidOption(cmd)){
 			File fileFromCommandLine = new File(args[args.length-1]);
 			if(!fileFromCommandLine.exists()){
 				System.err.println("The file located at " + fileFromCommandLine.toString() + " does not exist!  Qutting.");
 				return;
 			}
-			else if(fileFromCommandLine.isFile()){
+			else if(fileFromCommandLine.isFile() && fileFromCommandLine.toString().endsWith(".dae")){
 				// we've been given a single file.  Act on this single file
 				doRequestedAction(fileFromCommandLine, cmd);
 			}
@@ -94,24 +94,63 @@ public class ZeroCollada {
 		}
 
 	}
-	
+
+	private static boolean hasValidOption(CommandLine cmd){
+		return cmd.hasOption(ZCOpts.transform) || cmd.hasOption(ZCOpts.translate);
+	}
+
 	private static void doRequestedAction(File file, CommandLine cmd) throws IOException, JDOMException{
 		// what is the operation?
 		if(cmd.hasOption(ZCOpts.transform)){
 			// Do a transform that brings us as close to zero as possible
-			SAXBuilder builder = new SAXBuilder();
-			Document dom = builder.build(file);
-			
+			Document dom = createDocument(file);
+
 			ClosestToOriginTransformer ct = new ClosestToOriginTransformer(dom, cmd.hasOption(ZCOpts.includeX), cmd.hasOption(ZCOpts.includeY), cmd.hasOption(ZCOpts.includeZ));
 			file = removeOldXYZTag(file);
-			ct.writeColladaToFile(new File(file.toString().substring(0, file.toString().lastIndexOf("."))+ct.newFileNameSuffix()+".dae"));
+			ct.writeColladaToFile(newFilename(file, ct));
 			// recollect the resources
 			ct = null;
 			dom = null;
 			System.gc();
 		}
+		else if(cmd.hasOption(ZCOpts.translate)){
+			cmd.getOptionValues(ZCOpts.translate);
+			//System.out.println("Args: " + cmd.getOptionValues(ZCOpts.translate).length);
+			if(cmd.getOptionValues(ZCOpts.translate).length==0){
+				showHelp();
+			}
+			else{
+				Translation translation = new Translation(createDocument(file));
+				for(int i=0; i<cmd.getOptionValues(ZCOpts.translate).length; i++){
+					String arg = cmd.getOptionValues(ZCOpts.translate)[i];
+					if(arg.equals("zerowithname")){
+						translation.zeroTranslation(cmd.getOptionValues(ZCOpts.translate)[i+1]);
+					}
+					else if(arg.equals("zerowithoutname")){
+						translation.zeroAllTranslationsExcept(cmd.getOptionValues(ZCOpts.translate)[i+1]);
+					}
+				}
+				translation.writeColladaToFile(newFilename(file, translation));
+			}
+		}
 	}
-	
+
+	private static File newFilename(File file, ColladaManipulator manipulator){
+		return new File(file.toString().substring(0, file.toString().lastIndexOf("."))+manipulator.newFileNameSuffix()+".dae");
+	}
+
+	private static Document createDocument(File file) throws JDOMException, IOException{
+		SAXBuilder builder = new SAXBuilder();
+		Document dom = builder.build(file);
+		return dom;
+	}
+
+
+	private static void showHelp(){
+		HelpFormatter help = new HelpFormatter();
+		help.printHelp(usage, options);
+	}
+
 	private static File removeOldXYZTag(File file){
 		if(file.toString().contains("x_")){
 			return new File(file.toString().substring(0, file.toString().indexOf("x_"))+".dae");
@@ -129,12 +168,17 @@ public class ZeroCollada {
 		Option includeZ = new Option(ZCOpts.includeZ, "Include the Z-Axis in this transform calculation");
 		Option anchorCenter = new Option(ZCOpts.anchorCenter, "NOT IMPLEMENTED YET -- Anchors the transformation to the middle of the *range* of coordinates (not the average)");
 
+		Option translate = new Option(ZCOpts.translate, true, "Change translations");
+		translate.setArgName("translation type");
+		translate.setArgs(2);
+
 		options.addOption(help);
 		options.addOption(transform);
 		options.addOption(includeX);
 		options.addOption(includeY);
 		options.addOption(includeZ);
 		options.addOption(anchorCenter);
+		options.addOption(translate);
 	}
 
 }

@@ -31,6 +31,8 @@ import org.jdom.Element;
 public class Translation extends ColladaManipulator{
 	
 	protected ArrayList<Element> translations;
+	
+	String removed = "";
 
 	/**
 	 * 
@@ -48,7 +50,7 @@ public class Translation extends ColladaManipulator{
 			if(sid!=null){
 				if(!sid.equals(translationSIDToLeaveIntact)){
 					translation.setText("0 0 0");
-					return;
+					removed = removed.concat(sid+"_");
 				}
 			}
 		}
@@ -60,6 +62,7 @@ public class Translation extends ColladaManipulator{
 			if(sid!=null){
 				if(sid.equals(translationSIDToZero)){
 					translation.setText("0 0 0");
+					removed = removed.concat(sid+"_");
 					return;
 				}
 			}
@@ -75,5 +78,13 @@ public class Translation extends ColladaManipulator{
 				findTranslations((Element)o, translations);
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see net.skyebook.zerocollada.ColladaManipulator#newFileNameSuffix()
+	 */
+	@Override
+	public String newFileNameSuffix(){
+		return removed;
 	}
 }

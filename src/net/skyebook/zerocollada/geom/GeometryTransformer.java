@@ -59,12 +59,6 @@ public abstract class GeometryTransformer extends ColladaManipulator{
 	public abstract void doTransformation(ArrayList<Vector3> vertices, Element positionsElement, Element arrayElement);
 
 	/**
-	 * Generates the filename for this file
-	 * @return
-	 */
-	public abstract String newFileNameSuffix();
-
-	/**
 	 * 
 	 * @return
 	 */

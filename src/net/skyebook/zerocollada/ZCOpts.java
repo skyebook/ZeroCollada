@@ -28,6 +28,8 @@ public class ZCOpts {
 
 	public static final String transform = "t";
 	
+	public static final String translate = "T";
+	
 	public static final String includeX = "x";
 	public static final String includeY = "y";
 	public static final String includeZ = "z";

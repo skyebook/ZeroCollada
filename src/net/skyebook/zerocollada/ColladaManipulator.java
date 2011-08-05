@@ -121,4 +121,10 @@ public abstract class ColladaManipulator {
 			}
 		}
 	}
+	
+	/**
+	 * Generates the filename for this file
+	 * @return
+	 */
+	public abstract String newFileNameSuffix();
 }
